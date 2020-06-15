@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require 'slidr'
+
+# puts Slidr::VERSION
+
+Slidr.config do |config|
+  config.base do |base|
+    base.remark is: "assets/remark-latest.min.js" # is:/path: is optional, should work with simple string, and = as well.
+    base.html is: 'assets/base.html' # same here
+    base.script is: <<-EOF
+      # here we do not care about what script tag exists already
+      # this is optional
+    EOF
+  end
+
+  config.slides path: "path/to/slides_folder" do |slide|
+    # slide.order is: ["intro.md", "story.md", "demo.md", "qa.md"] # if next, start, end exist, that will override order attribute
+    slide.then 'intro.md'
+    slide.then 'story.md'
+    slide.then 'demo.md'
+    slide.then 'qa.md'
+  end
+
+  config.layouts do |layout|
+    layout epam: 'path/to/epam'
+    layout elte: 'path/to/elte'
+    # ...
+  end
+
+  config.outputs path: "path/to/output/" do |output| # once output is empty, then path is ., should work with path: or without
+
+    output.of :epam, :elte do |out|
+      out.name is: "slides.html" # once name is empty, then epam.html, elte.html will be the name
+      out.path is: "~/path/to/somewhere/else" # override the outter path, can be absolute, relative, and aliased as here
+      out.publish [:public, :protected] # once it is empty/blank, all will be published
+    end
+
+    output.of :obudai do |obudai|
+      obudai.draft true # if draft is not initialized, then it is false by default
+      obudai.publish [:beginner, :intermediate, :advanced]
+    end
+
+    output.of :meetup do |meetup|
+      meetup.draft true # if draft is not initialized, then it is false by default
+      meetup.publish :all # takes all slides, only: [], or exclude: []
+    end
+
+    output.of :another_one # then, everything will be default as said above
+  end
+
+end.start

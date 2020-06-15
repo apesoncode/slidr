@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+
+require 'slidr'
+
+Slidr.config do |config|
+  config.base do
+    remark is: "examples/assets/remark-latest.min.js"
+    html is: 'examples/assets/base.html'
+    structure is: 'examples/assets/structure.css'
+    script is: <<-EOF
+      var slideshow = remark.create();
+    EOF
+  end
+
+  config.slides path: "examples/markdowns" do
+    order is: ["intro.md"]
+    after then: 'demo.md'
+    after then: "story.md"
+    after then: 'qa.md'
+  end
+
+  config.layouts do
+    layout meetup: 'examples/layouts/meetup'
+    layout conference: 'examples/layouts/conference'
+  end
+
+  config.outputs path: './outputs' do |output|
+    
+    output.of :meetup do
+      title 'Meetup Slides'
+      name 'meetup_slides.html'
+      path './outputs/my-meetup'
+      draft true
+      publish [:beginner, :intermediate]
+    end
+
+    output.of :conference
+  end
+
+end.start
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
